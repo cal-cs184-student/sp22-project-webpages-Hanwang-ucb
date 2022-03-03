@@ -2,6 +2,7 @@
 body{
 	margin:0;
 	font-family: 'Roboto', sans-serif;
+	
 }
 body a{
 	transition: 0.5s all ease;
@@ -102,9 +103,9 @@ span.menu {
 }
 .bottom-nav {
 	background: #f8f8f8;
-	text-align: right;
 	border-bottom: 1px solid #d4d4d4;
 	padding: 1.2em 0;
+	text-align: right;
 }
 span.menu2{
 	display: none;
@@ -619,12 +620,40 @@ ul.p_n-list a.next:hover {
 	text-align: left;
 	line-height: 1.6;
 }
+
+.div1 {
+  width:auto;
+  height:atuo;
+  border:1px solid black;
+  display: table-cell;
+  vertical-align: middle;
+}
+
+.div1 img  {
+  width: auto;
+  max-width: 100%;
+  /*max-height: 100%;*/
+  /*display: block;*/
+  margin: auto;
+}
+
+
 .sngl-img {
+
   overflow: hidden;
   position: relative !important;
   padding: 0;
 }
+
+.single-img img {
+	object-fit:cover;
+  max-width: 100%;
+  /*max-height: 100%;*/
+
+}
+
 .single-page  img {
+	object-fit:cover;
 	box-sizing: border-box;
 	height: auto;
 	max-width: 100%;
