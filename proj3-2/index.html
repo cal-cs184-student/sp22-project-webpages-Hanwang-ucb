@@ -1,7 +1,221 @@
 <html>
-	<head>
-	</head>
-	<body>
-		Project 3-2 here
-	</body>
+<head>
+<title>cs284-p3-2</title>
+<link href="css/style.css" type="text/css" rel="stylesheet" media="all">
+<link href="css/bootstrap.css" type="text/css" rel="stylesheet" media="all">
+
+<!-- js -->
+<script src="js/jquery.min.js"></script>
+<script src="js/modernizr.custom.js"></script>
+<!-- //js -->	
+<!-- start-smoth-scrolling-->
+
+<script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=AM_HTMLorMML-full"></script>
+<script type="text/javascript" src="js/move-top.js"></script>
+<script type="text/javascript" src="js/easing.js"></script>	
+<script type="text/javascript" src="js/modernizr.custom.53451.js"></script>
+<script type="text/javascript">
+		jQuery(document).ready(function($) {
+			$(".scroll").click(function(event){		
+				event.preventDefault();
+				$('html,body').animate({scrollTop:$(this.hash).offset().top},1000);
+			});
+		});
+</script>
+<!--//end-smoth-scrolling-->
+
+</head>
+<body>
+<!-- <body oncontextmenu='return false' ondragstart='return false' onselectstart ='return false' onselect='document.selection.empty()' oncopy='document.selection.empty()' onbeforecopy='return false' onmouseup='document.selection.empty()'> -->
+	<!--header-->
+	<div class="header">
+		<div class="container">
+			<div class="header-class">
+				<h1 style="color:white;"></a>CS284</a></h1>
+			</div>
+		</div>	
+	</div>
+	<!--//header-->
+	<!--report-->
+	<div class="report">
+		<div class="container">
+			<div class="fav-app">
+				<h3>Reprot of Project 3-2: Path Tracing</h3>
+				<h5 style="font-size:18px;">Han Wang</h5>				
+				<h6>Submitted on April 1, 2022</h6>
+				<div class="sngl-img">
+					<img src="images/first.png" class="img" /> </a>
+				</div>
+				<h6>Nobody can reject a platinum bunny. Nobody.<h6>
+				
+				<h4>Overview</h4>
+				<p style="font-size:20px;">In this project, I added more complex materials to project 3-1 than diffuse reflections, including glass, mirrors and microfacet materials.
+
+				
+				</p>
+
+				<h4>Part 1: Mirror and Glass Materials</h4>
+
+				<p style="font-size:20px;">The implementation of mirror material is straight forward, since we assume it's perfect mirror, so the reflection function <code>BSDF::reflect()</code> only changes the direction ray and doesn't occur the Lambertian falloff. <br><br>
+
+				
+				The implementation of glass material including reflection and refraction. The refraction of glass is implemented in <code>BSDF::refract()</code> which takes the opposite direction of entering or exiting <code>wo</code> and returns the if the refraction happens with a bool variable and store the refraction direction in <code>wi</code> if it occurs. The sample of glass material is implemented in <code>GlassBSDF::sample_f()</code>, wherein we check the total internal reflection first with <code>BSDF::refract()</code>. If there's no total internal reflection, a coin will be flipped with a biased weighted according to Schlick's reflection coefficient to determine return the reflection ray or refraction ray.
+
+				<p style="font-size:20px;"><b>Show a sequence of six images of scene CBspheres.dae rendered with max_ray_depth set to 0, 1, 2, 3, 4, 5, and 100. The other settings should be at least 64 samples per pixel and 4 samples per light.</b><br><br>
+
+
+				<div class="div1">
+					<img src="images/P1_m1_s256.png" /> </a>
+				</div>
+				<h5><code>-m 1 (-s 256 -l 4)</code></h5>
+
+				<div class="div1">
+					<img src="images/P1_m2_s256.png" /> </a>
+				</div>
+				<h5><code>-m 2 (-s 256 -l 4)</code></h5>
+
+				<div class="div1">
+					<img src="images/P1_m3_s256.png" /> </a>
+				</div>
+				<h5><code>-m 3 (-s 256 -l 4)</code></h5>
+								
+				<div class="div1">
+					<img src="images/P1_m4_s256.png" /> </a>
+				</div>
+				<h5><code>-m 4 (-s 256 -l 4)</code></h5>
+								
+				<div class="div1">
+					<img src="images/P1_m5_s256.png" /> </a>
+				</div>
+				<h5><code>-m 5 (-s 256 -l 4)</code></h5>
+								
+				<div class="div1">
+					<img src="images/P1_m100_s256.png" /> </a>
+				</div>
+				<h5><code>-m 100 (-s 256 -l 4)</code></h5>
+
+
+
+				<p style="font-size:20px;"><b>Point out the new multibounce effects that appear in each image. Explain how these bounce numbers relate to the particular effects that appear.</b><br><br>
+
+				The change in the image as the number of bounces increases is inspiring: 
+
+				<br><br>When max ray depth is 1, the rendering result is much like the direct illumination in Project 3-1 without the diffuse reflective materials for sphere. Only direct light from the light source and light that has been reflected once is shot into the camera. Thus the two spheres appear all black except for the highlights spots. 
+
+				<br><br>In the image with max ray depth of 2, the reflection is shown on spheres. The reflection on the mirror is significantly brighter than the reflection on glass, which is caused by the coin flip that happened when the ray intersected with glass sphere and turns a proportion of rays into refractions. The glass sphere in the reflection on mirror is full black without any reflection other than light source because of the limitation of bounce numbers. The area of the ceiling other than the light source is illuminated by the reflection of other objects, while the corresponding part in the reflection is still dark which need to be illuminated by an extra bounce. On the ground, the shadow of sphere are slightly colored by the reflection rays from the wall.
+
+				<br><br>In the image with max ray depth of 3, the glass sphere became 'transparent' because the refraction appears, which consist of rays reflected twice before exiting the sphere. In the reflection on mirror sphere, the ceiling other than the light source is illuminated and the reflection on glass sphere is shown.Some interesting changes also occurred on the ground: spots of light formed in the shadow of the glass sphere due to its own convex lens effect, wherein the rays experience two refraction by glass sphere before reflected into camera by the ground.
+
+				<br><br>From max ray depth of 3 to 4, the most noticeable difference is the light spots of convex lens effect formed on the right wall due to the ray reflected from mirror sphere. The glass sphere in the reflection on mirror is 'transparent' because the rays passing through the glass now have enough number of depth to be reflected by mirror. The bottom of glass sphere is illustrated by the reflection of spot light in its shadow. An extra reflection of light resource is shown on glass sphere caused by the ray reflected when exiting the glass sphere. Similar change like above could be observed from the comparison max ray depth of 4 to 5.
+
+				<h4>Part 2: Microfacet Material</h4>
+
+
+				<p style="font-size:20px;"><b>Show a sequence of 4 images of scene CBdragon_microfacet_au.dae rendered with \alphaα set to 0.005, 0.05, 0.25 and 0.5. The other settings should be at least 128 samples per pixel and 1 samples per light. The number of bounces should be at least 5. Describe the differences between different images.</b><br><br>
+				
+				The following images are rendered with parameters <code>-s 256 -l 16 -m 6</code>. The comparison shows that higher roughness brings the material closer to diffuse reflection. A lower roughness results in a smoother surface, on which the reflection of the light source is more clear.
+
+				<div class="div1">
+					<img src="images/P2_005.png" /> </a>
+				</div>
+				<h5>alpha = 0.005</h5>
+
+
+				<div class="div1">
+					<img src="images/P2_050.png" /> </a>
+				</div>
+				<h5>alpha = 0.05</h5>
+				
+
+				<div class="div1">
+					<img src="images/P2_250.png" /> </a>
+				</div>
+				<h5>alpha = 0.25</h5>
+				
+
+				<div class="div1">
+					<img src="images/P2_500.png" /> </a>
+				</div>
+				<h5>alpha = 0.5</h5>
+				
+
+				<p style="font-size:20px;"><b>Show two images of scene CBbunny_microfacet_cu.dae rendered using cosine hemisphere sampling (default) and your importance sampling. The sampling rate should be fixed at 64 samples per pixel and 1 samples per light. The number of bounces should be at least 5. Briefly discuss their difference.</b><br><br>
+
+				The following images are rendered with parameters <code>-s 256 -l 16 -m 6</code>. At the same sampling rate, cosine hemisphere sampling generates a lot of noise, while importance sampling prioritizes samples that have a significant impact on the image and thus avoids the generation of a lot of noise.
+
+				<div class="div1">
+					<img src="images/P2_cosh.png" /> </a>
+				</div>
+				<h5>Cosine hemisphere Sampling</h5>
+
+				<div class="div1">
+					<img src="images/P2_impt.png" /> </a>
+				</div>
+				<h5>Important Sampling</h5>
+
+
+				<p style="font-size:20px;"><b>Show at least one image with some other conductor material, replacing eta and k. Note that you should look up values for real data rather than modifying them arbitrarily. Tell us what kind of material your parameters correspond to.</b><br><br>
+
+
+				<p style="font-size:20px;">The following images are rendered with parameters of platinum and copper under given wavelength:<br><br>
+
+            	Platinum: <br>
+            	η: [0.46138 0.46608 0.58870]<br>
+    			k: [5.9022 5.0942 3.9742]<br><br>
+
+				Copper: <br>
+				η: [0.33228 1.0162 1.2474]<br>
+            	k: [3.1646 2.5785 2.4603]<br><br><br>
+
+
+				<div class="div1">
+					<img src="images/P2_Pt.png" /> </a>
+				</div>
+				<h5>CBdragon in platinum <code>-s 256 -l 16 -m 6, alpha = 0.25</code></h5>
+
+				<div class="div1">
+					<img src="images/P2_Cu.png" /> </a>
+				</div>
+				<h5>CBdragon in copper <code>-s 256 -l 16 -m 6, alpha = 0.25</code></h5>
+
+
+
+
+
+
+
+
+				
+				
+	<!--//report-->
+	
+
+
+
+
+
+
+
+
+
+
+	<!--smooth-scrolling-of-move-up-->
+		<script type="text/javascript">
+			$(document).ready(function() {
+				/*
+				var defaults = {
+					containerID: 'toTop', // fading element id
+					containerHoverID: 'toTopHover', // fading element hover id
+					scrollSpeed: 1200,
+					easingType: 'linear' 
+				};
+				*/
+				
+				$().UItoTop({ easingType: 'easeOutQuart' });
+				
+			});
+		</script>
+		<a href="#" id="toTop" style="display: block;"> <span id="toTopHover" style="opacity: 1;"> </span></a>
+	<!--//smooth-scrolling-of-move-up-->	
+</body>
 </html>
